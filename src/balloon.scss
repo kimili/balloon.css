@@ -5,6 +5,7 @@
 $balloon-bg:             fade-out(#111, .1);
 $balloon-base-size:      10px;
 $balloon-arrow-height:   6px;
+$small-screen-max-width: 767px;
 
 
 //
@@ -258,7 +259,7 @@ $balloon-arrow-height:   6px;
             white-space: normal;
             width: 380px;
 
-            @media screen and (max-width: 768px) {
+            @media screen and (max-width: $small-screen-max-width) {
                 white-space: normal;
                 width: 90vw;
             }
@@ -270,5 +271,58 @@ $balloon-arrow-height:   6px;
             white-space: normal;
             width: 100%;
         }
+    }
+
+    @media screen and (max-width: $small-screen-max-width) {
+        &[data-balloon-smallscreen-overlay] {
+            &:before,
+            &:after {
+                display: none;
+            }
+        }
+
+    }
+}
+
+
+.balloon-overlay-scrim {
+    background-color: rgba(255,255,255,0.7);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    @include base-effects();
+
+    .balloon-overlay {
+        background: $balloon-bg;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 12px;
+        max-width: 90vw;
+        padding: .5em 1em;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 380px;
+        @include transform(translate3d(-50%, -55%, 0));
+        @include base-effects();
+    }
+
+    &.visible {
+        pointer-events: none;
+        @include opacity(1);
+
+        .balloon-overlay {
+            @include opacity(1);
+            @include transform(translate3d(-50%, -50%, 0));
+        }
+    }
+}
+
+@media screen and (min-width: $small-screen-max-width + 1) {
+    .balloon-overlay-scrim {
+        display: none;
     }
 }

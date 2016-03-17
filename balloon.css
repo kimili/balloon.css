@@ -185,10 +185,80 @@
   [data-balloon][data-balloon-length='xlarge']:before {
     white-space: normal;
     width: 380px; }
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       [data-balloon][data-balloon-length='xlarge']:before {
         white-space: normal;
         width: 90vw; } }
   [data-balloon][data-balloon-length='fit']:before {
     white-space: normal;
     width: 100%; }
+  @media screen and (max-width: 767px) {
+    [data-balloon][data-balloon-smallscreen-overlay]:before, [data-balloon][data-balloon-smallscreen-overlay]:after {
+      display: none; } }
+
+.balloon-overlay-scrim {
+  background-color: rgba(255, 255, 255, 0.7);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  filter: alpha(opactiy=0);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  -moz-opacity: 0;
+  -khtml-opacity: 0;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-transition: all 0.18s ease-out;
+  -moz-transition: all 0.18s ease-out;
+  -ms-transition: all 0.18s ease-out;
+  -o-transition: all 0.18s ease-out;
+  transition: all 0.18s ease-out; }
+  .balloon-overlay-scrim .balloon-overlay {
+    background: rgba(17, 17, 17, 0.9);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 12px;
+    max-width: 90vw;
+    padding: .5em 1em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 380px;
+    -webkit-transform: translate3d(-50%, -55%, 0);
+    -moz-transform: translate3d(-50%, -55%, 0);
+    -ms-transform: translate3d(-50%, -55%, 0);
+    transform: translate3d(-50%, -55%, 0);
+    filter: alpha(opactiy=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    opacity: 0;
+    pointer-events: none;
+    -webkit-transition: all 0.18s ease-out;
+    -moz-transition: all 0.18s ease-out;
+    -ms-transition: all 0.18s ease-out;
+    -o-transition: all 0.18s ease-out;
+    transition: all 0.18s ease-out; }
+  .balloon-overlay-scrim.visible {
+    pointer-events: none;
+    filter: alpha(opactiy=100);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    -moz-opacity: 1;
+    -khtml-opacity: 1;
+    opacity: 1; }
+    .balloon-overlay-scrim.visible .balloon-overlay {
+      filter: alpha(opactiy=100);
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+      -moz-opacity: 1;
+      -khtml-opacity: 1;
+      opacity: 1;
+      -webkit-transform: translate3d(-50%, -50%, 0);
+      -moz-transform: translate3d(-50%, -50%, 0);
+      -ms-transform: translate3d(-50%, -50%, 0);
+      transform: translate3d(-50%, -50%, 0); }
+
+@media screen and (min-width: 768px) {
+  .balloon-overlay-scrim {
+    display: none; } }
