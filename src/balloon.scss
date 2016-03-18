@@ -6,6 +6,7 @@ $balloon-bg:             fade-out(#111, .1);
 $balloon-base-size:      10px;
 $balloon-arrow-height:   6px;
 $small-screen-max-width: 767px;
+$scrim-bg:               fade-out(#000, .5);
 
 
 //
@@ -286,7 +287,7 @@ $small-screen-max-width: 767px;
 
 
 .balloon-overlay-scrim {
-    background-color: rgba(0,0,0,0.5);
+    background-color: $scrim-bg;
     pointer-events: auto !important;
     position: fixed;
     top: 0;
