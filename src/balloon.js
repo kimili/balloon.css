@@ -2,34 +2,81 @@
 
     'use strict';
 
+    /**
+     *     some element reference variables.
+     */
     var body, overlay, scrim;
 
+    /**
+     *     Variable: overlay_open
+     *        A boolean flag to keep track of whether an overlay balloon is open or not.
+     */
     var overlay_open = false;
 
+    /**
+     *     Variable: max_width
+     *        The maximum window width to display an overlay balloon
+     */
     var max_width = 767;
 
+    /**
+     *     Function: bindEvents
+     *        Sets up event binding for the balloon module
+     *
+     *    Returns:
+     *        nothing
+     */
     function bindEvents() {
         body.addEventListener('click', handleBalloonClick, true);
     }
 
+    /**
+     *     Function: handleBalloonClick
+     *        Figures out whether to display a balloon on trigger click. Bound to a click event on the body
+     *
+     *    Arguments:
+     *        e - *(Object)* The event object
+     *
+     *    Returns:
+     *        nothing
+     */
     function handleBalloonClick(e) {
         var trigger_el, tooltip_text, header_text;
 
-        if ( overlay_open || window.innerWidth > max_width ) {
+        if ( overlay_open ) {
             return;
         }
 
-        trigger_el = ( e.target.hasAttribute('data-balloon') && e.target.hasAttribute('data-balloon-smallscreen-overlay') ) ? e.target : isChildOfTrigger(e.target);
+        if ( window.innerWidth > max_width ) {
+            trigger_el = ( e.target.hasAttribute('data-balloon') ) ? e.target : isChildOfTrigger(e.target);
+        } else {
+            trigger_el = ( e.target.hasAttribute('data-balloon') && e.target.hasAttribute('data-balloon-smallscreen-overlay') ) ? e.target : isChildOfTrigger(e.target);
+        }
 
         if ( ! trigger_el ) {
             return;
         }
 
+        e.stopPropagation();
+
+        if ( window.innerWidth > max_width ) {
+            return;
+        }
         tooltip_text = trigger_el.getAttribute('data-balloon');
-        header_text = trigger_el.textContent.trim();
+        header_text = trigger_el.getAttribute('data-balloon-title') || trigger_el.textContent.trim();
         showOverlay(tooltip_text, header_text);
     }
 
+    /**
+     *     Function: isChildOfTrigger
+     *        Determines whether or not an element is contained within an overlay trigger.
+     *
+     *    Arguments:
+     *        el - *(element)* The element to check if it's a descendent or not.
+     *
+     *    Returns:
+     *        *(Object)* The smallscreen overlay trigger, if the element passed in is a child node of that trigger, otherwise null
+     */
     function isChildOfTrigger(el) {
         while ( el ) {
             if ( el.hasAttribute && el.hasAttribute('data-balloon-smallscreen-overlay') ) {
@@ -40,6 +87,17 @@
         return null;
     }
 
+    /**
+     *     Function: showOverlay
+     *        Builds and displays an overlay tooltip
+     *
+     *    Arguments:
+     *        text - *(String)* The text content to display in the overlay tooltip
+     *        header_text - *(String)* The text to display as a header in the overlay tooltip
+     *
+     *    Returns:
+     *        nothing
+     */
     function showOverlay(text, header_text) {
         var header, p;
 
@@ -75,6 +133,16 @@
         overlay_open = true;
     }
 
+    /**
+     *     Function: hideOverlay
+     *        Removes the overlay if its visible. Bound to the window scroll and body click events when an overlay tooltip is rendered.
+     *
+     *    Arguments:
+     *        e - *(Object)* The event object
+     *
+     *    Returns:
+     *        nothing
+     */
     function hideOverlay(e) {
 
         if ( e.type === 'scroll' ||  e.type === 'click' && e.target === scrim ) {
@@ -92,16 +160,31 @@
                 body.removeChild(scrim);
                 overlay_open = false;
             }, 180);
-
-
         }
     }
 
+    /**
+     *     Function: initialize
+     *        Sets up the balloon module.
+     *
+     *    Returns:
+     *        nothing
+     */
     function initialize() {
         body = document.querySelector('body');
         bindEvents();
     }
 
+    /**
+     *     Function: ready
+     *        A cross browser wrapper for hooking into the domready event.
+     *
+     *    Arguments:
+     *        fn - *(Function)* The function to fire on document ready.
+     *
+     *    Returns:
+     *        nothing
+     */
     function ready(fn) {
         if (document.readyState != 'loading'){
             fn();
@@ -110,6 +193,9 @@
         }
     }
 
+    /**
+     *    Fire it up.
+     */
     ready(initialize);
 
 })();
