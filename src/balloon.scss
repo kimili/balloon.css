@@ -2,11 +2,16 @@
 // Variables
 // -----------------------------------------
 
-$balloon-bg:             fade-out(#111, .1);
-$balloon-base-size:      10px;
-$balloon-arrow-height:   6px;
-$small-screen-max-width: 767px;
-$scrim-bg:               fade-out(#000, .5);
+$balloon-bg:                fade-out(#111, .1) !default;
+$balloon-font-color:        #fff !default;
+$balloon-base-size:         10px !default;
+$balloon-arrow-height:      6px !default;
+$balloon-border-radius:     4px !default;
+$balloon-drop-shadow-color: none !default;
+$balloon-drop-shadow:       none !default;
+$balloon-padding:           0.5em 1em !default;
+$small-screen-max-width:    767px !default;
+$scrim-bg:                  fade-out(#000, .5) !default;
 
 
 //
@@ -16,25 +21,31 @@ $scrim-bg:               fade-out(#000, .5);
 @mixin svg-arrow ($color, $position: up) {
 
     $degrees: 0;
-    $height:  6px;
-    $width:   18px;
+    $height:  $balloon-arrow-height;
+    $width:   $balloon-arrow-height * 3;
+    $shadow:  0 2px 1px transparentize($balloon-drop-shadow-color, 0.2);
 
     @if ($position == down) {
-        $degrees: 180 18 6;
+        $degrees: 180 strip-units($width) strip-units($height);
+        $shadow:  0 -2px 1px transparentize($balloon-drop-shadow-color, 0.2);
     } @else if ($position == left) {
-        $degrees: -90 18 18;
-        $width: 6px;
-        $height: 18px;
+        $width: $balloon-arrow-height;
+        $height: $balloon-arrow-height * 3;
+        $degrees: -90 strip-units($height) strip-units($height);
+        $shadow:  2px 0 1px transparentize($balloon-drop-shadow-color, 0.2);
     } @else if ($position == right) {
-        $degrees: 90 6 6;
-        $width: 6px;
-        $height: 18px;
+        $width: $balloon-arrow-height;
+        $height: $balloon-arrow-height * 3;
+        $degrees: 90 strip-units($width) strip-units($width);
+        $shadow:  -2px 0 1px transparentize($balloon-drop-shadow-color, 0.2);
     }
 
-    background: no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="#{$width * 2}" height="#{$height * 2}"><path fill="#{$color}" transform="rotate(#{$degrees})" d="M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z"/></svg>');
+    background: no-repeat url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><path fill="#{$color}" transform="rotate(#{$degrees})" d="M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z"/></svg>');
     background-size: 100% auto;
     width: $width;
     height: $height;
+    filter: drop-shadow($shadow);
+    -webkit-filter: drop-shadow($shadow);
 }
 
 @mixin transition ($args...) {
@@ -69,8 +80,11 @@ $scrim-bg:               fade-out(#000, .5);
 
 @mixin base-effects () {
     @include opacity(0);
-    pointer-events: none;
     @include transition(all .18s ease-out);
+}
+
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
 }
 
 
@@ -82,18 +96,31 @@ $scrim-bg:               fade-out(#000, .5);
 [data-balloon] {
     position: relative; // alt. absolute or fixed
 
-    &:before {
+	h5 {
+		font-size: $balloon-base-size + 5px;
+		font-weight: 700;
+		margin-bottom: 10px;
+	}
+
+	p {
+		margin-bottom: 0;
+	}
+
+    &[data-balloon-html-content] .balloon,
+    &:not([data-balloon-html-content]):before {
         @include base-effects();
 
         background: $balloon-bg;
-        border-radius: 4px;
-        color: #fff;
+        border-radius: $balloon-border-radius;
+        color: $balloon-font-color;
         content: attr(data-balloon);
         font-size: $balloon-base-size + 2;
-        padding: .5em 1em;
+        padding: $balloon-padding;
         position: absolute;
         white-space: nowrap;
         z-index: 10;
+        box-shadow: $balloon-drop-shadow;
+        pointer-events: none;
     }
 
     &:after {
@@ -106,7 +133,8 @@ $scrim-bg:               fade-out(#000, .5);
     }
 
     &:hover {
-        &:before,
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before,
         &:after {
             @include opacity(1);
             pointer-events: auto;
@@ -114,13 +142,15 @@ $scrim-bg:               fade-out(#000, .5);
     }
 
     &[data-balloon-break] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             white-space: normal;
         }
     }
 
     &[data-balloon-pos="up"] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             bottom: 100%;
             left: 50%;
             margin-bottom: 5px + $balloon-arrow-height;
@@ -137,7 +167,8 @@ $scrim-bg:               fade-out(#000, .5);
         }
 
         &:hover {
-            &:before {
+            &[data-balloon-html-content] .balloon,
+            &:not([data-balloon-html-content]):before {
                 @include transform(translate3d(-50%, 0, 0));
             }
 
@@ -149,7 +180,8 @@ $scrim-bg:               fade-out(#000, .5);
     }
 
     &[data-balloon-pos='down'] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             left: 50%;
             margin-top: 5px + $balloon-arrow-height;
             top: 100%;
@@ -166,7 +198,8 @@ $scrim-bg:               fade-out(#000, .5);
         }
 
         &:hover {
-            &:before {
+            &[data-balloon-html-content] .balloon,
+            &:not([data-balloon-html-content]):before {
                 @include transform(translate3d(-50%, 0, 0));
             }
 
@@ -177,7 +210,8 @@ $scrim-bg:               fade-out(#000, .5);
     }
 
     &[data-balloon-pos='left'] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             margin-right: 5px + $balloon-arrow-height;
             right: 100%;
             top: 50%;
@@ -194,7 +228,8 @@ $scrim-bg:               fade-out(#000, .5);
         }
 
         &:hover {
-            &:before {
+            &[data-balloon-html-content] .balloon,
+            &:not([data-balloon-html-content]):before {
                 @include transform(translate3d(0, -50%, 0));
             }
 
@@ -206,7 +241,8 @@ $scrim-bg:               fade-out(#000, .5);
     }
 
     &[data-balloon-pos='right'] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
 
             left: 100%;
             margin-left: 5px + $balloon-arrow-height;
@@ -224,7 +260,8 @@ $scrim-bg:               fade-out(#000, .5);
         }
 
         &:hover {
-            &:before {
+            &[data-balloon-html-content] .balloon,
+            &:not([data-balloon-html-content]):before {
                 @include transform(translate3d(0, -50%, 0));
             }
 
@@ -235,28 +272,32 @@ $scrim-bg:               fade-out(#000, .5);
     }
 
     &[data-balloon-length='small'] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             white-space: normal;
             width: 80px;
         }
     }
 
     &[data-balloon-length='medium'] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             white-space: normal;
             width: 150px;
         }
     }
 
     &[data-balloon-length='large'] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             white-space: normal;
             width: 260px;
         }
     }
 
     &[data-balloon-length='xlarge'] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             white-space: normal;
             width: 380px;
 
@@ -268,7 +309,8 @@ $scrim-bg:               fade-out(#000, .5);
     }
 
     &[data-balloon-length='fit'] {
-        &:before {
+        &[data-balloon-html-content] .balloon,
+        &:not([data-balloon-html-content]):before {
             white-space: normal;
             width: 100%;
         }
@@ -276,7 +318,8 @@ $scrim-bg:               fade-out(#000, .5);
 
     @media screen and (max-width: $small-screen-max-width) {
         &[data-balloon-smallscreen-overlay] {
-            &:before,
+            &[data-balloon-html-content] .balloon,
+            &:not([data-balloon-html-content]):before,
             &:after {
                 display: none;
             }
@@ -288,7 +331,6 @@ $scrim-bg:               fade-out(#000, .5);
 
 .balloon-overlay-scrim {
     background-color: $scrim-bg;
-    pointer-events: auto !important;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -299,11 +341,11 @@ $scrim-bg:               fade-out(#000, .5);
 
     .balloon-overlay {
         background: $balloon-bg;
-        border-radius: 4px;
-        color: #fff;
-        font-size: 15px;
+        border-radius: $balloon-border-radius;
+        color: $balloon-font-color;
+        font-size: $balloon-base-size + 2px;
         max-width: 90vw;
-        padding: 15px;
+        padding: $balloon-padding;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -312,9 +354,9 @@ $scrim-bg:               fade-out(#000, .5);
         @include base-effects();
 
         h5 {
-            font-size: 14px;
+            font-size: $balloon-base-size + 5px;
             font-weight: 700;
-            text-transform: uppercase;
+            margin-bottom: 10px;
         }
 
         p {

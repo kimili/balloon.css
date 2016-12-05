@@ -7,22 +7,22 @@
   "homepage": "http://kazzkiq.github.io/balloon.css/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kazzkiq/balloon.css.git"
+    "url": "https://github.com/kimili/balloon.css.git"
   },
   "files": [
-    "src/balloon.scss"
+    "src/balloon.scss",
+    "src/balloon.js",
+    "dist/balloon.min.css",
+    "dist/balloon.min.js"
   ],
   "main": "src/balloon.scss",
   "scripts": {
-    "build-all": "npm run build-sass && npm run build-less && npm run build-js",
-    "build-sass": "node-sass src/balloon.scss ./balloon.css && node-sass src/balloon.scss ./balloon.min.css --output-style compressed",
-    "build-less": "lessc src/balloon.less ./balloon.css && lessc --clean-css src/balloon.less ./balloon.min.css",
-    "build-js": "uglifyjs src/balloon.js -c -m -o ./balloon.min.js",
-    "watch-sass": "node-sass --watch src/balloon.scss ./balloon.css"
+    "build-all": "npm run build-sass && npm run build-js",
+    "build-sass": "node-sass src/balloon.scss dist/balloon.css && node-sass src/balloon.scss dist/balloon.min.css --output-style compressed",
+    "build-js": "uglifyjs src/balloon.js -c -m -o dist/balloon.min.js",
+    "watch-sass": "node-sass --watch src/balloon.scss dist/balloon.css"
   },
   "devDependencies": {
-    "less": "^2.6.1",
-    "less-plugin-clean-css": "^1.5.1",
     "node-sass": "^3.4.2",
     "uglify-js": "^2.6.2"
   }

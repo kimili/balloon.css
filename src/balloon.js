@@ -1,11 +1,11 @@
-(function(){
+(function () {
 
     'use strict';
 
     /**
      *     some element reference variables.
      */
-    var body, overlay, scrim;
+    var body, overlay, scrim, html_toolips;
 
     /**
      *     Variable: overlay_open
@@ -43,23 +43,23 @@
     function handleBalloonClick(e) {
         var trigger_el, tooltip_text, header_text;
 
-        if ( overlay_open ) {
+        if (overlay_open) {
             return;
         }
 
-        if ( window.innerWidth > max_width ) {
-            trigger_el = ( e.target.hasAttribute('data-balloon') ) ? e.target : isChildOfTrigger(e.target);
+        if (window.innerWidth > max_width) {
+            trigger_el = (e.target.hasAttribute('data-balloon')) ? e.target : isChildOfTrigger(e.target);
         } else {
-            trigger_el = ( e.target.hasAttribute('data-balloon') && e.target.hasAttribute('data-balloon-smallscreen-overlay') ) ? e.target : isChildOfTrigger(e.target);
+            trigger_el = (e.target.hasAttribute('data-balloon') && e.target.hasAttribute('data-balloon-smallscreen-overlay')) ? e.target : isChildOfTrigger(e.target);
         }
 
-        if ( ! trigger_el ) {
+        if (!trigger_el) {
             return;
         }
 
         e.stopPropagation();
 
-        if ( window.innerWidth > max_width ) {
+        if (window.innerWidth > max_width) {
             return;
         }
         tooltip_text = trigger_el.getAttribute('data-balloon');
@@ -78,13 +78,43 @@
      *        *(Object)* The smallscreen overlay trigger, if the element passed in is a child node of that trigger, otherwise null
      */
     function isChildOfTrigger(el) {
-        while ( el ) {
-            if ( el.hasAttribute && el.hasAttribute('data-balloon-smallscreen-overlay') ) {
+        while (el) {
+            if (el.hasAttribute && el.hasAttribute('data-balloon-smallscreen-overlay')) {
                 return el;
             }
             el = el.parentElement;
         }
         return null;
+    }
+
+    /**
+     *     Function: generateHTMLTooltips
+     *        For any tooltips marked as having HTML content, this builds an HTML version of the tooltip.
+     *
+     *    Returns:
+     *        nothing
+     */
+    function generateHTMLTooltips() {
+        var i, container, tooltip, header, header_text, p;
+        for (i = 0; i < html_toolips.length; i++) {
+            container = html_toolips[i];
+
+            tooltip = document.createElement('span');
+            p = document.createElement('p');
+
+            tooltip.className = 'balloon';
+
+            header_text = container.getAttribute('data-balloon-title') || container.textContent.trim();
+            if (header_text) {
+                header = document.createElement('h5');
+                header.textContent = header_text;
+                tooltip.appendChild(header);
+            }
+
+            p.innerHTML = container.getAttribute('data-balloon');
+            tooltip.appendChild(p);
+            container.appendChild(tooltip);
+        }
     }
 
     /**
@@ -105,7 +135,7 @@
         scrim = document.createElement('div');
         p = document.createElement('p');
 
-        if ( header_text ) {
+        if (header_text) {
             header = document.createElement('h5');
             header.textContent = header_text;
         }
@@ -113,9 +143,9 @@
         overlay.className = 'balloon-overlay';
         scrim.className = 'balloon-overlay-scrim';
 
-        p.textContent = text;
+        p.innerHTML = text;
 
-        if ( header ) {
+        if (header) {
             overlay.appendChild(header);
         }
         overlay.appendChild(p);
@@ -123,7 +153,7 @@
         scrim.appendChild(overlay);
         body.appendChild(scrim);
 
-        window.setTimeout(function(){
+        window.setTimeout(function () {
             scrim.className += ' visible';
         }, 10);
 
@@ -145,7 +175,7 @@
      */
     function hideOverlay(e) {
 
-        if ( e.type === 'scroll' ||  e.type === 'click' && e.target === scrim ) {
+        if (e.type === 'scroll' || e.type === 'click' && e.target === scrim) {
             e.stopPropagation();
             e.stopImmediatePropagation();
             e.preventDefault();
@@ -154,9 +184,9 @@
             body.removeEventListener('click', hideOverlay);
             window.removeEventListener('scroll', hideOverlay);
 
-            scrim.className = scrim.className.replace(/\bvisible\b/g,'');
+            scrim.className = scrim.className.replace(/\bvisible\b/g, '');
 
-            window.setTimeout(function(){
+            window.setTimeout(function () {
                 body.removeChild(scrim);
                 overlay_open = false;
             }, 180);
@@ -172,6 +202,8 @@
      */
     function initialize() {
         body = document.querySelector('body');
+        html_toolips = document.querySelectorAll('[data-balloon-html-content]');
+        generateHTMLTooltips();
         bindEvents();
     }
 
@@ -186,7 +218,7 @@
      *        nothing
      */
     function ready(fn) {
-        if (document.readyState != 'loading'){
+        if (document.readyState != 'loading') {
             fn();
         } else {
             document.addEventListener('DOMContentLoaded', fn);
