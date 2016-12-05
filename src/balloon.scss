@@ -2,11 +2,11 @@
 // Variables
 // -----------------------------------------
 
-$balloon-bg:             fade-out(#111, .1);
-$balloon-base-size:      10px;
-$balloon-arrow-height:   6px;
-$small-screen-max-width: 767px;
-$scrim-bg:               fade-out(#000, .5);
+$balloon-bg:             fade-out(#111, .1) !default;
+$balloon-base-size:      10px !default;
+$balloon-arrow-height:   6px !default;
+$small-screen-max-width: 767px !default;
+$scrim-bg:               fade-out(#000, .5) !default;
 
 
 //
