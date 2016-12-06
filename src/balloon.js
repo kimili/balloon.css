@@ -17,7 +17,7 @@
      *     Variable: max_width
      *        The maximum window width to display an overlay balloon
      */
-    var max_width = 767;
+    var max_width = 979;
 
     /**
      *     Function: bindEvents
@@ -58,6 +58,7 @@
         }
 
         e.stopPropagation();
+        e.preventDefault();
 
         if (window.innerWidth > max_width) {
             return;
