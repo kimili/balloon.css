@@ -23,6 +23,8 @@ $scrim-bg:                  fade-out(#000, .5) !default;
     $degrees: 0;
     $height:  $balloon-arrow-height;
     $width:   $balloon-arrow-height * 3;
+    $shadow:  none;
+    
     @if ($balloon-drop-shadow-color != none) {
         $shadow:  0 2px 1px transparentize($balloon-drop-shadow-color, 0.2);
     }
