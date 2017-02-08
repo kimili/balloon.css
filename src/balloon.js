@@ -27,7 +27,7 @@
      *        nothing
      */
     function bindEvents() {
-        triggers.forEach(function(item) {
+        [].forEach.call(triggers, function(item) {
             item.addEventListener('click', handleBalloonClick, true);
         });
     }
@@ -50,9 +50,9 @@
         }
 
         if (window.innerWidth > max_width) {
-            trigger_el = (e.target.hasAttribute('data-balloon')) ? e.target : isChildOfTrigger(e.target);
+            trigger_el = (e.currentTarget.hasAttribute('data-balloon')) ? e.currentTarget : isChildOfTrigger(e.currentTarget);
         } else {
-            trigger_el = (e.target.hasAttribute('data-balloon') && e.target.hasAttribute('data-balloon-smallscreen-overlay')) ? e.target : isChildOfTrigger(e.target);
+            trigger_el = (e.currentTarget.hasAttribute('data-balloon') && e.currentTarget.hasAttribute('data-balloon-smallscreen-overlay')) ? e.currentTarget : isChildOfTrigger(e.currentTarget);
         }
 
         if (!trigger_el) {
@@ -178,7 +178,7 @@
      */
     function hideOverlay(e) {
 
-        if (e.type === 'scroll' || e.type === 'click' && e.target === scrim) {
+        if (e.type === 'scroll' || e.type === 'click' && e.currentTarget === scrim) {
             e.stopPropagation();
             e.stopImmediatePropagation();
             e.preventDefault();
