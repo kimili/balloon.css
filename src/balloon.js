@@ -5,7 +5,7 @@
     /**
      *     some element reference variables.
      */
-    var body, overlay, scrim, html_toolips;
+    var body, overlay, scrim, triggers, html_toolips;
 
     /**
      *     Variable: overlay_open
@@ -27,7 +27,9 @@
      *        nothing
      */
     function bindEvents() {
-        body.addEventListener('click', handleBalloonClick, true);
+        triggers.forEach(function(item) {
+            item.addEventListener('click', handleBalloonClick, true);
+        });
     }
 
     /**
@@ -203,6 +205,7 @@
      */
     function initialize() {
         body = document.querySelector('body');
+        triggers = document.querySelectorAll('[data-balloon]');
         html_toolips = document.querySelectorAll('[data-balloon-html-content]');
         generateHTMLTooltips();
         bindEvents();
