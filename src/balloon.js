@@ -160,7 +160,7 @@
             scrim.className += ' visible';
         }, 10);
 
-        body.addEventListener('click', hideOverlay, true);
+        scrim.addEventListener('click', hideOverlay, true);
         window.addEventListener('scroll', hideOverlay);
 
         overlay_open = true;
@@ -184,7 +184,7 @@
             e.preventDefault();
 
             // Clean up event handlers.
-            body.removeEventListener('click', hideOverlay);
+            scrim.removeEventListener('click', hideOverlay);
             window.removeEventListener('scroll', hideOverlay);
 
             scrim.className = scrim.className.replace(/\bvisible\b/g, '');
